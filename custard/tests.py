@@ -30,3 +30,10 @@ class CustardTest(TestCase):
     def test_pretty_string(self):
         i = Ingredient(name='Vanilla', amount=3)
         self.assertEquals(i.pretty_string(), '3 amounts of Vanilla')
+    
+    def test_monkey_patched_name_field(self):
+        i = Ingredient(name="a" * 40, amount=3)
+        i.save()
+        name_field = i._meta.get_field_by_name('name')[0]
+        self.assertEquals(name_field.max_length, 50)
+        self.assertEquals(i.name,"a" * 40)
